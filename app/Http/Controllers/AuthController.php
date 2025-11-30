@@ -15,37 +15,30 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        try {
-            // Validasi kredensial
-            $credentials = $request->only('email', 'password');
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required']
+        ]);
 
-            if (!Auth::guard('web')->attempt($credentials)) {
-                return response()->json([
-                    'message' => 'Unauthorized',
-                    'data'    => null,
-                ], 401);
-            }
-
-            // Ambil user setelah login
-            $user = Auth::user();
-
-            // Generate token
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            return response()->json([
-                'message' => 'Login Berhasil',
-                'data'    => [
-                    'token' => $token,
-                    'user'  => new UserResource($user),
-                ],
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Terjadi Kesalahan',
-                'error'   => $e->getMessage(),
-            ], 500);
+        if (!Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
+
+        $user = Auth::user();
+
+        // HAPUS session() → karena kita pakai API TOKEN mode
+        // $request->session()->regenerate();
+
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login Berhasil',
+            'token' => $token,
+            'user' => new UserResource($user)
+        ]);
     }
+
+
 
     public function register(RegisterRequest $request)
     {

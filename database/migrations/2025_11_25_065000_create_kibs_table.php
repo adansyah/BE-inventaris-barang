@@ -29,6 +29,8 @@ return new class extends Migration
             $table->decimal('nilai_perolehan', 10, 2);
             $table->string('status_penggunaan');
             $table->string('keterangan')->nullable();
+            $table->string('gambar')->nullable();
+            $table->string('gambar_qr')->nullable();
             $table->timestamps();
         });
     }
