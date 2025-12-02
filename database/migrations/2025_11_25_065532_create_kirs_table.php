@@ -16,15 +16,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('kib_id')->constrained()->onDelete('cascade');
             $table->string('nama_barang');
-            $table->string('merk');
-            $table->integer('no_seri');
-            $table->string('ukuran');
-            $table->string('bahan');
-            $table->date('tahun_buat');
-            $table->integer('jumlah_barang_register');
-            $table->decimal('harga_beli', 10, 2);
-            $table->enum('kondisi_barang', ['baik', 'kurang baik', 'rusak berat'])->default('baik');
-            $table->string('keterangan_mutasi')->nullable();
+            $table->string('kode_barang');
+            $table->date('tahun');
+            $table->string('lokasi_ruangan');
+            $table->enum('kondisi', ['baik', 'kurang baik', 'rusak berat'])->default('baik');
+            $table->integer('jumlah');
+            $table->decimal('nilai_perolehan', 10, 2);
+            $table->string('gambar_qr')->nullable();
             $table->timestamps();
         });
     }

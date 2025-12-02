@@ -14,15 +14,13 @@ class kir extends Model
         'user_id',
         'kib_id',
         'nama_barang',
-        'merk',
-        'no_seri',
-        'ukuran',
-        'bahan',
-        'tahun_buat',
-        'jumlah_barang_register',
-        'harga_beli',
-        'kondisi_barang',
-        'keterangan_mutasi',
+        'kode_barang',
+        'tahun',
+        'lokasi_ruangan',
+        'kondisi',
+        'jumlah',
+        'nilai_perolehan',
+        'gambar_qr',
     ];
 
     public function kib()
