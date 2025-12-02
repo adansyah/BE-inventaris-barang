@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/kir/{id}', [KIRController::class, 'show']);
     Route::put('/kir/{id}', [KIRController::class, 'update']);
     Route::delete('/kir/{id}', [KIRController::class, 'destroy']);
+    Route::post('/kir/print-label', [KirController::class, 'printLabel']);
 });

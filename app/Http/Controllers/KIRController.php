@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\kib;
 use App\Models\kir;
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -54,22 +55,20 @@ class KIRController extends Controller
 
         $validated['user_id'] = Auth::id();
 
-        // ------------------------------------------------
-        // GENERATE QR CODE (isi QR = URL detail API)
-        // ------------------------------------------------
-        $qrData = url('/kir/' . $item->id);  // URL untuk scan QR
 
-        // Simpan ke storage/public/qrcodes
+        $qrData = url('/kir/' . $item->id);
+
         $qrName = 'qr_' . time() . '_' . $item->id . '.svg';
         $qrPath = 'qrcodes/' . $qrName;
 
         $qrImage = QrCode::format('svg')->size(300)->generate($qrData);
         Storage::disk('public')->put($qrPath, $qrImage);
 
-        // Update field gambar_qr
         $item->update([
             'gambar_qr' => $qrPath
         ]);
+
+
 
         return response()->json([
             'message' => 'Data berhasil disimpan dan QR telah dibuat',
@@ -145,5 +144,26 @@ class KIRController extends Controller
         return response()->json([
             'message' => 'Data berhasil dihapus'
         ]);
+    }
+
+    public function printLabel(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array'
+        ]);
+
+        $items = Kir::with('kib')->whereIn('id', $request->ids)->get();
+
+        $pdf = \PDF::loadView('pdf.label', compact('items'));
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->download('label-aset.pdf');
+    }
+
+    public function tes()
+    {
+        $items = kir::all();
+        return view('pdf.label', compact('items'));
     }
 }
