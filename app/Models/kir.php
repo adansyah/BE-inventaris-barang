@@ -16,7 +16,7 @@ class kir extends Model
         'nama_barang',
         'kode_barang',
         'tahun',
-        'lokasi_ruangan',
+        'lokasi',
         'kondisi',
         'jumlah',
         'nilai_perolehan',

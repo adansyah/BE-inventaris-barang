@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nama_barang');
             $table->string('kode_barang');
             $table->date('tahun');
-            $table->string('lokasi_ruangan');
+            $table->string('lokasi');
             $table->enum('kondisi', ['baik', 'kurang baik', 'rusak berat'])->default('baik');
             $table->integer('jumlah');
             $table->decimal('nilai_perolehan', 10, 2);

@@ -3,12 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KIBController;
 use App\Http\Controllers\KIRController;
 use App\Http\Controllers\UserController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 Route::middleware('auth:sanctum', 'role:admin')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -33,4 +35,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/kir/{id}', [KIRController::class, 'update']);
     Route::delete('/kir/{id}', [KIRController::class, 'destroy']);
     Route::post('/kir/print-label', [KirController::class, 'printLabel']);
+
+    // Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 });

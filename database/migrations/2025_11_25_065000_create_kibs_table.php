@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('kontruksi')->nullable();
             $table->integer('luas_lantai')->nullable();
             $table->string('no_dokumen')->nullable();
-            $table->decimal('jumlah', 10, 2);
+            $table->integer('jumlah');
             $table->decimal('harga_satuan', 10, 2);
             $table->decimal('nilai_perolehan', 10, 2);
             $table->string('status_penggunaan');

@@ -10,6 +10,10 @@ class kib extends Model
 {
     use HasFactory, HasApiTokens;
 
+
+    protected $appends = ['gambar_url'];
+
+
     protected $fillable = [
         'user_id',
         'kode_barang',
@@ -45,5 +49,12 @@ class kib extends Model
     public function kib()
     {
         return $this->hasMany(kib::class);
+    }
+
+    public function getGambarUrlAttribute()
+    {
+        return $this->gambar
+            ? asset('storage/' . $this->gambar)
+            : null;
     }
 }

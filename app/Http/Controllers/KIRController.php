@@ -14,7 +14,7 @@ class KIRController extends Controller
 {
     public function Kir()
     {
-        $kirs = kir::all();
+        $kirs = kir::latest()->paginate(10)->get();
 
         foreach ($kirs as $kir) {
             if ($kir->gambar_qr) {
@@ -30,89 +30,88 @@ class KIRController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'kib_id' => 'required',
-            'nama_barang' => 'required',
-            'kode_barang' => 'required',
-            'tahun' => 'required',
-            'lokasi_ruangan' => 'required',
-            'jumlah' => 'required',
-            'nilai_perolehan' => 'required'
-        ]);
+        $dataArray = $request->all(); // terima array
 
-        // Simpan data biasa
-        $item = kir::create([
-            'user_id' => Auth::id(),
-            'kib_id' => $request->kib_id,
-            'nama_barang' => $request->nama_barang,
-            'kode_barang' => $request->kode_barang,
-            'tahun' => $request->tahun,
-            'lokasi_ruangan' => $request->lokasi_ruangan,
-            'kondisi' => $request->kondisi ?? 'baik',
-            'jumlah' => $request->jumlah,
-            'nilai_perolehan' => $request->nilai_perolehan,
-        ]);
+        foreach ($dataArray as $data) {
 
-        $validated['user_id'] = Auth::id();
+            $validated = validator($data, [
+                'kib_id' => 'required',
+                'nama_barang' => 'required',
+                'kode_barang' => 'required',
+                'tahun' => 'required',
+                'lokasi' => 'required',
+                'jumlah' => 'required',
+                'nilai_perolehan' => 'required'
+            ])->validate();
 
+            $item = kir::create([
+                'user_id' => Auth::id(),
+                'kib_id' => $data['kib_id'],
+                'nama_barang' => $data['nama_barang'],
+                'kode_barang' => $data['kode_barang'],
+                'tahun' => $data['tahun'],
+                'lokasi' => $data['lokasi'],
+                'kondisi' => $data['kondisi'] ?? 'baik',
+                'jumlah' => $data['jumlah'],
+                'nilai_perolehan' => $data['nilai_perolehan'],
+            ]);
 
-        $qrData = url('/kir/' . $item->id);
+            // Generate QR
+            $qrData = url('/kir/' . $item->id);
+            $qrName = 'qr_' . time() . '_' . $item->id . '.svg';
+            $qrPath = 'qrcodes/' . $qrName;
 
-        $qrName = 'qr_' . time() . '_' . $item->id . '.svg';
-        $qrPath = 'qrcodes/' . $qrName;
+            $qrImage = \QrCode::format('svg')->size(300)->generate($qrData);
+            Storage::disk('public')->put($qrPath, $qrImage);
 
-        $qrImage = QrCode::format('svg')->size(300)->generate($qrData);
-        Storage::disk('public')->put($qrPath, $qrImage);
-
-        $item->update([
-            'gambar_qr' => $qrPath
-        ]);
-
-
+            $item->update([
+                'gambar_qr' => $qrPath
+            ]);
+        }
 
         return response()->json([
-            'message' => 'Data berhasil disimpan dan QR telah dibuat',
-            'data' => $item
+            'message' => 'Semua data berhasil disimpan!'
         ]);
     }
+
 
     public function update(Request $request, $id)
     {
-        $item = kir::findOrFail($id);
+        $kir = Kir::findOrFail($id);
 
         $validated = $request->validate([
             'kib_id' => 'required',
             'nama_barang' => 'required',
             'kode_barang' => 'required',
             'tahun' => 'required',
-            'lokasi_ruangan' => 'required',
-            'jumlah' => 'required',
-            'nilai_perolehan' => 'required'
+            'lokasi' => 'required',
+            'kondisi' => 'required',
+            'jumlah' => 'required|numeric',
+            'nilai_perolehan' => 'required|numeric',
         ]);
 
-        // Update data tanpa menyentuh gambar_qr
-        $item->update([
-            'kib_id' => $request->kib_id,
-            'nama_barang' => $request->nama_barang,
-            'kode_barang' => $request->kode_barang,
-            'tahun' => $request->tahun,
-            'lokasi_ruangan' => $request->lokasi_ruangan,
-            'kondisi' => $request->kondisi ?? $item->kondisi,
-            'jumlah' => $request->jumlah,
-            'nilai_perolehan' => $request->nilai_perolehan,
-            // gambar_qr TIDAK DIUBAH
+        $kir->update([
+            'kib_id' => $validated['kib_id'],
+            'nama_barang' => $validated['nama_barang'],
+            'kode_barang' => $validated['kode_barang'],
+            'tahun' => $validated['tahun'],
+            'lokasi' => $validated['lokasi'],
+            'kondisi' => $validated['kondisi'],
+            'jumlah' => $validated['jumlah'],
+            'nilai_perolehan' => $validated['nilai_perolehan'],
         ]);
 
         return response()->json([
-            'message' => 'Data berhasil diperbarui',
-            'data' => $item
-        ]);
+            'message' => 'Data KIR berhasil diperbarui',
+            'data' => $kir
+        ], 200);
     }
+
 
 
     public function show($id)
     {
-        $kir = kir::findOrFail($id);
+        $kir = kir::with('kib')->findOrFail($id);
 
         if (!$kir) {
             return response()->json([
