@@ -14,7 +14,7 @@ class KIRController extends Controller
 {
     public function Kir()
     {
-        $kirs = kir::latest()->paginate(10)->get();
+        $kirs = kir::latest()->get();
 
         foreach ($kirs as $kir) {
             if ($kir->gambar_qr) {
@@ -61,7 +61,7 @@ class KIRController extends Controller
             $qrName = 'qr_' . time() . '_' . $item->id . '.svg';
             $qrPath = 'qrcodes/' . $qrName;
 
-            $qrImage = \QrCode::format('svg')->size(300)->generate($qrData);
+            $qrImage = QrCode::format('svg')->size(300)->generate($qrData);
             Storage::disk('public')->put($qrPath, $qrImage);
 
             $item->update([
