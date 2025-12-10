@@ -1,0 +1,59 @@
+/* Styling untuk seluruh halaman */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    padding: 20px;
+}
+
+/* Styling utama untuk tabel */
+table {
+    width: 100%; /* Tabel akan mengisi lebar kontainer */
+    border-collapse: collapse; /* Menggabungkan batas sel tunggal */
+    margin: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+    background-color: #ffffff;
+}
+
+/* Styling untuk Header Tabel (th) dan Sel Data (td) */
+th, td {
+    border: 1px solid #ddd; /* Batas tipis abu-abu */
+    padding: 10px 15px; /* Jarak di dalam sel */
+    text-align: center; /* Teks rata kiri secara default */
+}
+
+/* Styling khusus untuk Header Tabel (th) */
+th {
+    background-color: white; /* Warna latar belakang biru */
+    color: black; /* Warna teks putih */
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Styling untuk setiap baris (agar mudah dibaca - zebra striping) */
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Warna latar belakang abu-abu muda untuk baris genap */
+}
+
+/* Efek hover pada baris */
+tbody tr:hover {
+    background-color: #ddd; /* Perubahan warna saat mouse diarahkan ke baris */
+}
+
+/* Penyesuaian lebar kolom (opsional) */
+th:nth-child(1), td:nth-child(1) { /* Kolom No */
+    width: 5%;
+    text-align: center;
+}
+
+th:nth-child(3), td:nth-child(3) { /* Kolom Register */
+    width: 15%;
+}
+
+th:nth-child(5), td:nth-child(5) { /* Kolom Tahun Perolehan */
+    width: 10%;
+    text-align: center;
+}
+
+th:nth-child(6), td:nth-child(6) { /* Kolom Harga Perolehan */
+    text-align: center; /* Harga biasanya rata kanan */
+}
